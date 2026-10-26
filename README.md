@@ -13,4 +13,10 @@
 
 原資料：https://ks-lab.net/haruo/thinking_tool/short.pdf
 
-単体76件、Windows Chrome・Edge／Linux Chromiumで各66件、計198件の操作検証が成功。各環境のPDF 25件・PPTX 24件も解析・描画検証済みです。
+単体77件、Windows Chrome・Edge／Linux Chromiumで各69件、計207件の操作検証が成功。各環境のPDF 25件・PPTX 24件も解析・描画検証済みです。
+
+## 見やすさ・操作案内
+通常の操作バーを横に動かせる1段にし、詳しい説明は「操作のヒント」にまとめました。「文字を読みやすく」で100%へ戻し、「画面を広く使う」で全画面へ切り替えます。ホームの見出し・文字色・押しやすさ・キーボードのフォーカス表示も調整しました。
+検索は中点・空白・全角英数字の違いを吸収し、「クラゲチャート」「キャンディーチャート」「比較」でも探せます。作品の構造や保存方式は変更していません。
+
+検証対象：7d301bd6fc13de712c0301e10a04bf7f672d9885。検証実行：https://github.com/ss21education-wq/thinking-tools-app/actions/runs/40299902123

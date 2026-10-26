@@ -162,3 +162,38 @@ body.focus-mode .workspace-feedback .selection-feedback{margin-top:4px}
 .candy-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.candy-actions button{min-height:44px}.candy-actions span{font-size:14px;color:#536574}
 @media(max-width:700px){.candy-scroll{min-height:420px}}
 .candy-tile .candy-end{overflow:visible}
+
+/* Readable navigation and compact workspace controls. Diagram geometry is unchanged. */
+:root{color:#243449;background:#f8fafb;font-size:16px}
+h1{text-wrap:balance;line-height:1.4}h2,h3{color:#243449}
+.muted,.tool small,.choice span{color:#4e5c69}.num{color:#645844;font-weight:600}
+.choice,.tool{border-color:#bdc9d2;border-radius:12px}.choice:hover,.tool:hover{background:#f4f8fc;border-color:#597b9c}
+.choice span,.tool small{line-height:1.65}.choice strong{line-height:1.4}
+.tabs button,.back{min-height:44px}.tabs button{padding:10px 14px}.back{color:#365b7c}
+.editor>p,.note,.muted{line-height:1.65}.editor>label{font-weight:600}.editor>label input,.editor>label textarea{font-weight:400}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #155fa0;outline-offset:3px}
+button:disabled{opacity:1;color:#5b6775;background:#f1f4f7;border-color:#cbd5df}
+#resetDocument{color:#8e2c25;border-color:#b97a74}
+.skip-link{position:fixed;top:8px;left:8px;z-index:20000;background:white;color:#155fa0;padding:12px 16px;border:2px solid #155fa0;border-radius:8px;transform:translateY(-150%)}
+.skip-link:focus{transform:none}.skip-link:focus-visible{outline:3px solid #155fa0;outline-offset:2px}
+body.focus-mode .skip-link{display:none}
+.zoom-toolbar{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;max-width:100%;scrollbar-width:thin;scrollbar-color:#8399ab #f3f6f9;gap:4px}
+.zoom-toolbar button{flex-shrink:0}.zoom-toolbar [aria-pressed=true]{border-color:#155fa0;color:#164c7a;background:#dfedfa}
+.toolbar-hint{display:none}
+.view-help{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0 2px}
+.view-help button{min-height:44px;font-size:14px;padding:8px 12px;border-color:#8da8be;color:#204e73;background:#f3f8fc}
+.view-help [data-workspace="fullscreen"]{background:#245d88;border-color:#245d88;color:white}
+#zoomHint{flex-basis:100%;font-size:13px;line-height:1.5;color:#4b5966}
+.workspace-controls .workspace-feedback{margin-top:6px;padding:6px 10px}
+.mode-heading{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;min-width:0}
+#workspaceMode{display:flex;align-items:center;min-height:40px;min-width:0;flex:1;font-size:14px;line-height:1.5}
+.operation-help{flex:none;max-width:100%}.operation-help summary{cursor:pointer;min-height:40px;display:list-item;list-style:revert;font-size:13px;color:#245d88;padding:9px 4px;pointer-events:auto}
+.operation-help[open]{flex:1}.operation-help[open] summary{font-weight:600}.operation-help p{font-size:14px;font-weight:400;line-height:1.6;margin:4px 0 8px;color:#365268;overflow-wrap:anywhere}
+.mode-heading:has(.operation-help[open]){flex-wrap:wrap}.mode-heading:has(.operation-help[open]) #workspaceMode{flex-basis:100%}
+.selection-feedback{min-height:44px;flex-wrap:nowrap;gap:6px;margin-top:0}
+.selection-feedback span{flex:1;min-width:0;overflow-wrap:anywhere}.selection-feedback button{min-width:44px;min-height:44px;padding:6px 10px;flex:none}
+body.focus-mode .view-help,body.focus-mode .toolbar-hint{display:none}
+body.focus-mode .workspace-feedback{max-width:min(540px,calc(100vw - 16px));padding:6px 10px}
+body.focus-mode .operation-help{pointer-events:auto}body.focus-mode .operation-help[open]{max-height:35dvh;overflow:auto}
+@media(max-width:700px){main{margin:20px auto;padding:0 16px}h1{font-size:24px}header{padding:12px 16px;gap:12px}header b{font-size:17px}header #homeBtn{min-height:44px;flex:none;font-size:14px;padding:8px 12px}.choice{padding:20px}.choice strong{font-size:20px}.tabs{gap:6px}.toolbar-hint{display:block;font-size:12px;line-height:1.4;color:#4e5c69;margin:4px 2px 0}.zoom-toolbar{flex-wrap:nowrap;gap:4px}.view-help button{font-size:13px;padding:8px 10px}.workspace-feedback #workspaceMode{font-size:13px}.operation-help summary{font-size:12px}.selection-feedback{font-size:12px}.selection-feedback button{font-size:12px}.thinking-steps span{color:#4e5c69}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
