@@ -139,3 +139,26 @@ body.focus-mode .workspace-feedback button{pointer-events:auto;min-height:36px;p
 body.focus-mode .workspace-feedback #workspaceMode{font-size:12px}
 body.focus-mode .workspace-feedback .selection-feedback{margin-top:4px}
 @media(max-width:700px){.thinking-steps{padding:12px}.thinking-steps ol{grid-template-columns:1fr}.thinking-steps button{min-height:58px;padding:10px 12px}.thinking-steps span{margin-top:2px}.editor>.row{align-items:stretch}.zoom-toolbar button{width:44px;height:44px}body.focus-mode .workspace-feedback{max-width:calc(100vw - 16px)}body.focus-mode #workspaceMode{font-weight:normal}}
+
+/* Multiple linked-reasoning candies share one pan/zoom workspace. */
+.candy-scroll{min-height:520px;max-height:78vh}
+.candy-canvas{position:relative;width:2600px;height:2000px;overflow:visible;background:white}
+.candy-case.candy-tile{position:absolute;width:1100px;height:480px;margin:0;padding:0;border:2px solid #8fa7bb;border-radius:14px;background:white;box-shadow:0 4px 12px #203b541a}
+.candy-case-bar{height:52px;display:flex;align-items:center;gap:8px;padding:4px 10px;border-bottom:1px solid #d6dfe7;border-radius:12px 12px 0 0;background:#f4f8fc}
+.candy-case-bar button{min-height:40px;padding:6px 12px;flex:none}
+.candy-case-bar .candy-grip{flex:1;text-align:left;border:1px dashed #839eb3;background:white;font-weight:600;cursor:grab;touch-action:none;user-select:none}
+.candy-grip:active{cursor:grabbing}
+.candy-tile .candy-row{min-width:0;width:100%;height:424px;margin:0;padding:22px 18px;display:grid;grid-template-columns:280px 360px 300px;gap:60px;align-items:stretch}
+.candy-tile .candy-end,.candy-tile .candy-center{min-width:0;padding:14px 16px;overflow:hidden}
+.candy-tile .candy-center{border-radius:70px;background:#fff5bf;display:flex;flex-direction:column;justify-content:center}
+.candy-tile .candy-end{background:#f4f8fc;border-radius:12px;border-style:dashed}
+.candy-tile .candy-end:first-child:after{width:62px}.candy-tile .candy-end:last-child:before{width:62px}
+.candy-tile h4{font-size:21px;margin:0 0 14px;color:#304b61}
+.candy-tile label{display:block;font-size:15px;line-height:1.5}
+.editor .candy-tile textarea{height:188px;min-height:0;max-height:none;margin:5px 0 10px;font-size:18px;line-height:1.5;resize:none;overflow:auto;background:#ffffffd9}
+.editor .candy-tile .candy-end:last-child textarea{height:96px}
+.candy-tile.is-picked{outline:4px solid #155fa0;outline-offset:4px;box-shadow:0 0 0 4px white,0 0 0 8px #155fa033}
+.candy-tile:focus-within{z-index:3}.candy-tile.is-picked{z-index:2}
+.candy-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.candy-actions button{min-height:44px}.candy-actions span{font-size:14px;color:#536574}
+@media(max-width:700px){.candy-scroll{min-height:420px}}
+.candy-tile .candy-end{overflow:visible}

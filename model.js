@@ -15,6 +15,7 @@ const DocumentModel = (() => {
     if(toolId===3)doc.diagram={mode:'ideas',count:3,teeth:Array.from({length:3},()=>({label:'',text:''}))};
     if(toolId===15)doc.diagram={problem:'',bones:Array.from({length:4},(_,i)=>({label:`分類${i+1}`,factors:[]}))};
     if(toolId===17)doc.diagram={regions:[[],[],[],[]]};
+    if(toolId===12)doc.version=4;
     if(toolId===12)doc.diagram={scenarios:[{condition:'',prediction:'',reason:'',source:''}]};
     if([0,11].includes(toolId)){doc.version=6;doc.diagram={nodes:[],links:[],groups:[],freeArrows:[]};}
     if(toolId===13){doc.version=4;doc.diagram={direction:'ltr',regions:[[],[],[],[],[]]};}
@@ -28,7 +29,7 @@ const DocumentModel = (() => {
     const str = v => typeof v === 'string' && v.length <= 20000;
     const strings = (v,min,max) => Array.isArray(v) && v.length >= min && v.length <= max && v.every(str);
     if (!value || !Number.isInteger(value.toolId) || value.toolId < 0 || value.toolId > 19) fail();
-    if(value.version!==2 && !(value.version===3 && [2,3,6,7,8,9,10,12,14,15,17].includes(value.toolId)) && !(value.version===4&&[0,11,13,16,18,19].includes(value.toolId)) && !(value.version===5&&[2,10].includes(value.toolId)) && !(value.version===6&&[0,11].includes(value.toolId)))fail();
+    if(value.version!==2 && !(value.version===3 && [2,3,6,7,8,9,10,12,14,15,17].includes(value.toolId)) && !(value.version===4&&[0,11,12,13,16,18,19].includes(value.toolId)) && !(value.version===5&&[2,10].includes(value.toolId)) && !(value.version===6&&[0,11].includes(value.toolId)))fail();
     if (![value.topic,value.notes,value.summary].every(str)) fail();
     const out = fresh(value.toolId);
     for (const key of ['topic','notes','summary']) out[key] = value[key];
@@ -115,10 +116,12 @@ const DocumentModel = (() => {
       }
     }
     if(value.toolId===12){
-      if(d===undefined&&value.version===3)fail();
+      if(d===undefined&&value.version!==2)fail();
       if(d!==undefined){
         if(!d||!Array.isArray(d.scenarios)||d.scenarios.length<1||d.scenarios.length>30||!d.scenarios.every(s=>s&&[s.condition,s.prediction,s.reason,s.source].every(str)))fail();
-        out.diagram={scenarios:d.scenarios.map(s=>({condition:s.condition,prediction:s.prediction,reason:s.reason,source:s.source}))};
+        out.diagram={scenarios:d.scenarios.map(s=>{
+ const entry={condition:s.condition,prediction:s.prediction,reason:s.reason,source:s.source};
+ if(s.x!==undefined||s.y!==undefined){if(![s.x,s.y].every(n=>Number.isInteger(n)&&Math.abs(n)<=1e9))fail();entry.x=s.x;entry.y=s.y;}return entry;})};
       }
     }
     if([0,11,13,16,18,19].includes(value.toolId)){
