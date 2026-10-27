@@ -197,3 +197,8 @@ body.focus-mode .workspace-feedback{max-width:min(540px,calc(100vw - 16px));padd
 body.focus-mode .operation-help{pointer-events:auto}body.focus-mode .operation-help[open]{max-height:35dvh;overflow:auto}
 @media(max-width:700px){main{margin:20px auto;padding:0 16px}h1{font-size:24px}header{padding:12px 16px;gap:12px}header b{font-size:17px}header #homeBtn{min-height:44px;flex:none;font-size:14px;padding:8px 12px}.choice{padding:20px}.choice strong{font-size:20px}.tabs{gap:6px}.toolbar-hint{display:block;font-size:12px;line-height:1.4;color:#4e5c69;margin:4px 2px 0}.zoom-toolbar{flex-wrap:nowrap;gap:4px}.view-help button{font-size:13px;padding:8px 10px}.workspace-feedback #workspaceMode{font-size:13px}.operation-help summary{font-size:12px}.selection-feedback{font-size:12px}.selection-feedback button{font-size:12px}.thinking-steps span{color:#4e5c69}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Selectable jellyfish legs and one-tap controls stay available while writing. */
+.jelly-leg{cursor:default}.jelly-leg.is-picked{outline:4px solid #155fa0;outline-offset:4px;box-shadow:0 0 0 4px white,0 0 0 8px #155fa033}
+.jelly-leg:focus-visible{outline:4px solid #155fa0;outline-offset:4px}.jelly-add-near{min-height:40px;width:100%;margin:4px 0 8px;background:#edf5fc;color:#164c7a}
+[data-workspace="jelly-add"]{background:#e3f2ff;border-color:#155fa0}[data-workspace="jelly-delete"]:not(:disabled){color:#982f38;border-color:#bb6870}
