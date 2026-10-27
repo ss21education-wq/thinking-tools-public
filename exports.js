@@ -44,13 +44,41 @@ const ThinkingExport=(()=>{
    [`ppt/slides/_rels/slide${i+1}.xml.rels`,rel([['rImage','image',`../media/image${i+1}.png`],['rLayout','slideLayout','../slideLayouts/slideLayout1.xml']])]);});return zip(files);
  }
  function wrap(ctx,text,width){const lines=[];for(const line of String(text).replace(/\r\n?/g,'\n').split('\n')){let row='';for(const ch of line){if(ctx.measureText(row+ch).width>width&&row){lines.push(row);row='';}row+=ch;}lines.push(row);}return lines;}
- function render(doc,name,fullText,makeCanvas=()=>document.createElement('canvas')){
+ function render(doc,name,fullText,makeCanvas=()=>document.createElement('canvas'),options={}){
   const pages=[];let ctx;
   function page(title){if(pages.length>=100)throw Error('出力が100ページを超えます。記入内容を分けて保存してください。');const canvas=makeCanvas();canvas.width=W;canvas.height=H;ctx=canvas.getContext('2d');if(!ctx)throw Error('画像を作成できません。');ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.fillStyle='#243449';ctx.font='bold 30px "Yu Gothic",sans-serif';ctx.fillText(title.slice(0,65),48,50);ctx.font='20px "Yu Gothic",sans-serif';ctx.fillText(`シンキングツール  |  ${pages.length+1}`,48,962);pages.push(canvas);return ctx;}
   function box(x,y,w,h,title,text,color='#f4f8fc',circle=false){ctx.strokeStyle='#597b9c';ctx.fillStyle=color;ctx.lineWidth=2;if(circle){ctx.beginPath();ctx.ellipse(x+w/2,y+h/2,w/2,h/2,0,0,Math.PI*2);ctx.fill();ctx.stroke();}else{ctx.fillRect(x,y,w,h);ctx.strokeRect(x,y,w,h);}ctx.save();ctx.beginPath();ctx.rect(x+10,y+8,w-20,h-16);ctx.clip();ctx.fillStyle='#243449';ctx.font='bold 20px "Yu Gothic",sans-serif';ctx.fillText(title,x+14,y+28);ctx.font='19px "Yu Gothic",sans-serif';const lines=wrap(ctx,text,w-28),max=Math.max(1,Math.floor((h-45)/25));lines.slice(0,max).forEach((l,i)=>ctx.fillText((i===max-1&&lines.length>max)?l+'…':l,x+14,y+58+i*25));ctx.restore();}
   function fitWorld(rects,width,height){const x=Math.min(0,...rects.map(p=>p.x-25)),y=Math.min(0,...rects.map(p=>p.y-35)),right=Math.max(width,...rects.map(p=>p.x+p.w+25)),bottom=Math.max(height,...rects.map(p=>p.y+p.h+25)),w=right-x,h=bottom-y,z=Math.min(1300/w,730/h);ctx.save();ctx.translate(50+(1300-w*z)/2,125+(730-h*z)/2);ctx.scale(z,z);ctx.translate(-x,-y);}
   const noteColor=c=>({yellow:'#fff1a8',blue:'#d7edff',green:'#ddf3c4',pink:'#ffe0ea',purple:'#eaddff',white:'#ffffff'}[c||'yellow']);
-  page(name+'：図の概要');ctx.fillText('テーマ：'+doc.topic.slice(0,70),48,90);const d=doc.diagram,id=doc.toolId;
+  const d=doc.diagram,id=doc.toolId;
+  if(id===6&&options.singlePageData){
+   page(name);
+   // Keep every row and every character on one sheet; reject overflow rather than silently omit it.
+   function fitted(text,x,y,w,h,bold=false,max=22){
+    let lines,size;
+    for(size=max;size>=12;size--){ctx.font=(bold?'bold ':'')+size+'px "Yu Gothic",sans-serif';lines=wrap(ctx,text,w);if(lines.length*size*1.35<=h)break;}
+    if(size<12)throw Error('データチャートを1ページに収められません。長い記入を短くしてからPDFを保存してください。編集用データ（JSON）では全文を保存できます。');
+    ctx.fillStyle='#243449';lines.forEach((line,i)=>ctx.fillText(line,x,y+size+i*size*1.35));
+   }
+   fitted('テーマ：'+doc.topic,50,70,1290,50,true);
+   const rows=d.rows.length+1,cols=d.columns.length+1,cw=1290/cols;
+   const cells=Array.from({length:rows},(_,r)=>Array.from({length:cols},(_,c)=>r===0?(c===0?'情報源 ／ 調査項目':d.columns[c-1]):c===0?d.rows[r-1]:d.cells[r-1][c-1]));
+   let size,heights;
+   for(size=22;size>=12;size--){
+    heights=cells.map((row,r)=>Math.max(44,...row.map((text,c)=>{ctx.font=(r===0||c===0?'bold ':'')+size+'px "Yu Gothic",sans-serif';return wrap(ctx,text,cw-20).length*size*1.35+20;})));
+    if(heights.reduce((a,b)=>a+b,0)<=510)break;
+   }
+   if(size<12)throw Error('データチャートの表を1ページに収められません。長い記入を短くしてからPDFを保存してください。編集用データ（JSON）では全文を保存できます。');
+   const extra=(510-heights.reduce((a,b)=>a+b,0))/rows;let y=130;
+   cells.forEach((row,r)=>{const h=heights[r]+extra;row.forEach((text,c)=>{const x=50+c*cw;ctx.fillStyle=r===0||c===0?'#edf5fc':'#ffffff';ctx.fillRect(x,y,cw,h);ctx.strokeStyle='#597b9c';ctx.lineWidth=1;ctx.strokeRect(x,y,cw,h);fitted(text,x+10,y+10,cw-20,h-20,r===0||c===0,size);});y+=h;});
+   const hasNotes=Boolean(doc.notes.trim()),summaryHeight=hasNotes?165:275;
+   ctx.fillStyle='#f4f8fc';ctx.fillRect(50,655,1290,summaryHeight);ctx.strokeStyle='#597b9c';ctx.strokeRect(50,655,1290,summaryHeight);
+   ctx.font='bold 22px "Yu Gothic",sans-serif';ctx.fillStyle='#243449';ctx.fillText('まとめ',64,684);
+   fitted(doc.summary,64,695,1262,summaryHeight-48);
+   if(hasNotes){ctx.font='bold 18px "Yu Gothic",sans-serif';ctx.fillText('考えたこと・メモ',50,847);fitted(doc.notes,50,855,1290,75,false,18);}
+   return pages;
+  }
+  page(name+'：図の概要');ctx.fillText('テーマ：'+doc.topic.slice(0,70),48,90);
   const columns=(labels,regions)=>{const n=labels.length,w=1290/n;labels.forEach((l,i)=>box(50+i*w,145,w-14,660,l,regions[i].join('\n')));};
   if(id===1){ctx.strokeStyle='#597b9c';ctx.lineWidth=3;for(const x of [520,880]){ctx.beginPath();ctx.ellipse(x,460,390,310,0,0,Math.PI*2);ctx.stroke();}ctx.fillText(d.labels[0].slice(0,25),120,133);ctx.fillText(d.labels[1].slice(0,25),870,133);['Aのみ','共通（両方）','Bのみ'].forEach((l,i)=>box(130+i*390,290,350,350,l,d.regions[i].join('\n')));}
   else if(id===2){const at=n=>({x:n.x,y:n.y,w:260,h:230}),root={x:870,y:710,w:260,h:180};fitWorld([root,...d.nodes.map(at)],2000,1600);const find=id=>id==='root'?root:at(d.nodes.find(n=>n.id===id));const line=(a,b)=>{ctx.beginPath();ctx.moveTo(a.x+a.w/2,a.y+a.h/2);ctx.lineTo(b.x+b.w/2,b.y+b.h/2);ctx.stroke();};d.nodes.forEach(n=>{if(n.parent!==null)line(n.parent?find(n.parent):root,at(n));});ctx.setLineDash([7,4]);(d.links||[]).forEach(l=>line(find(l.from),find(l.to)));ctx.setLineDash([]);box(root.x,root.y,root.w,root.h,'中心テーマ',doc.topic,'#edf5fc',true);d.nodes.forEach(n=>{const p=at(n);box(p.x,p.y,p.w,p.h,n.id,n.text,noteColor(n.color),(n.shape||'circle')==='circle');});ctx.restore();}
@@ -87,7 +115,7 @@ const ThinkingExport=(()=>{
  async function create(doc,name,format){
   if(!['pdf','pptx'].includes(format))throw Error('保存形式を選んでください。');
   await document.fonts.ready;
-  const pages=render(doc,name,DocumentModel.text(doc,name));
+  const pages=render(doc,name,DocumentModel.text(doc,name),undefined,{singlePageData:format==='pdf'&&doc.toolId===6});
   return format==='pdf'?pdf(pages.map(c=>dataBytes(c.toDataURL('image/jpeg',0.94)))):pptx(pages.map(c=>dataBytes(c.toDataURL('image/png'))));
  }
  return {create,render,wrap,pdf,pptx,zip,crc32};
